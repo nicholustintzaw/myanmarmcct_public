@@ -61,7 +61,7 @@ for(i in anthroChecks$id) {
     anthroDF[anthroChecks$index[anthroChecks$id == i], 
              anthroChecks$variable[anthroChecks$id == i]] <- anthroChecks$newvalue[anthroChecks$id == i]
 }
-  
+
 ```
 
 
@@ -102,7 +102,9 @@ chealth <- create_chealth(df = childHealth, x = hh, y = hhMembers)
 child_health <- recode_chealth(df = chealth)
 
 child_health <- janitor::clean_names(child_health)
+chealth <- janitor::clean_names(chealth)
 
+write_dta(chealth, file.path(getwd(), "stata_dta", "chealth.dta"))
 write_dta(child_health, file.path(getwd(), "stata_dta", "child_health_all.dta"))
 
 ```
@@ -190,6 +192,12 @@ write_dta(anc_past, file.path(getwd(), "stata_dta", "anc_past.dta"))
 write_dta(delivery, file.path(getwd(), "stata_dta", "delivery.dta"))
 write_dta(pnc, file.path(getwd(), "stata_dta", "pnc.dta"))
 
+anc1 <- janitor::clean_names(anc1)
+anc2 <- janitor::clean_names(anc2)
+
+write_dta(anc1, file.path(getwd(), "stata_dta", "anc1.dta"))
+write_dta(anc2, file.path(getwd(), "stata_dta", "anc2.dta"))
+
 ```
 
 
@@ -254,6 +262,141 @@ ppiDF <- janitor::clean_names(ppiDF)
 
 write_dta(ppiDF, file.path(getwd(), "stata_dta", "ppiDF.dta"))
 
+```
+
+
+
+
+## Weight Calculation 
+
+The `r` file called `23-calculate_weight.R` did not include the calculation of weight applied in the MCCT baseline analysis. It just described the function. We need to calculate the input parameters required to use that function. I found the `weight.R` file from the `data-raw` folder to calculate those required function input parameters. The syntax from that file calculates the required information for each study stratum to calculate the weight. The blow was the detailed syntax execution. 
+
+```{r}
+options(stringsAsFactors = FALSE)
+
+pop <- read.csv("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/data-raw/pop/popMyanmar.csv")
+
+x <- pop[ , c("geo_ward_vt_eho", "population")]
+y <- hh[hh$sample_component == 1, c("geo_state", "geo_rural", "geo_villward")]
+hhWeight <- hh[hh$sample_component == 1, ]
+z <- merge(x, y, by.x = "geo_ward_vt_eho", by.y = "geo_villward", all.y = TRUE)
+hhWeight <- merge(x, hhWeight, by.x = "geo_ward_vt_eho", by.y = "geo_villward", all.y = TRUE)
+
+### get median population size of clusters in a state
+
+medianPop <- tapply(X = z$population, INDEX = z$geo_state, FUN = median, na.rm = TRUE)
+
+z$population[is.na(z$population) & z$geo_state == "MMR002"] <- medianPop[1]
+z$population[is.na(z$population) & z$geo_state == "MMR003"] <- medianPop[2]
+
+### get weights for MMR002 and geo_rural == 0 (Rural)
+
+z1 <- z[z$geo_state == "MMR002" & z$geo_rural == "0", ]
+
+z1 <- aggregate(x = z1[ , c("geo_state", "geo_rural", "geo_ward_vt_eho", "population")],
+                by = list(z1$geo_ward_vt_eho), FUN = "unique")
+
+z1$totalPop <- sum(z1$population)
+
+### get weights for MMR002 and geo_rural == 1 (Urban)
+
+z2 <- z[z$geo_state == "MMR002" & z$geo_rural == "1", ]
+
+z2 <- aggregate(x = z2[ , c("geo_state", "geo_rural", "geo_ward_vt_eho", "population")],
+                by = list(z2$geo_ward_vt_eho), FUN = "unique")
+
+z2$totalPop <- sum(z2$population)
+
+
+### get weights for MMR002 and geo_rural == 2 (EHO)
+
+z3 <- z[z$geo_state == "MMR002" & z$geo_rural == "2", ]
+
+z3 <- aggregate(x = z3[ , c("geo_state", "geo_rural", "geo_ward_vt_eho", "population")],
+                by = list(z3$geo_ward_vt_eho), FUN = "unique")
+
+z3$totalPop <- sum(z3$population)
+
+
+### get weights for MMR003 and geo_rural == 0 (Rural)
+
+z4 <- z[z$geo_state == "MMR003" & z$geo_rural == "0", ]
+
+z4 <- aggregate(x = z4[ , c("geo_state", "geo_rural", "geo_ward_vt_eho", "population")],
+                by = list(z4$geo_ward_vt_eho), FUN = "unique")
+
+z4$totalPop <- sum(z4$population)
+
+### get weights for MMR003 and geo_rural == 1 (Urban)
+
+z5 <- z[z$geo_state == "MMR003" & z$geo_rural == "1", ]
+
+z5 <- aggregate(x = z5[ , c("geo_state", "geo_rural", "geo_ward_vt_eho", "population")],
+                by = list(z5$geo_ward_vt_eho), FUN = "unique")
+
+z5$totalPop <- sum(z5$population)
+
+
+### get weights for MMR003 and geo_rural == 2 (EHO)
+
+z6 <- z[z$geo_state == "MMR003" & z$geo_rural == "2", ]
+
+z6 <- aggregate(x = z6[ , c("geo_state", "geo_rural", "geo_ward_vt_eho", "population")],
+                by = list(z6$geo_ward_vt_eho), FUN = "unique")
+
+z6$totalPop <- sum(z6$population)
+
+
+zz <- data.frame(rbind(z1, z2, z3, z4, z5, z6))
+
+### Kayin pop - 1055359; Kayah pop - 286627
+
+nClusters <- vector(mode = "numeric", length = nrow(zz))
+nClusters[zz$geo_state == "MMR002" & zz$geo_rural == "0"] <- 24
+nClusters[zz$geo_state == "MMR002" & zz$geo_rural == "1"] <- 24
+nClusters[zz$geo_state == "MMR002" & zz$geo_rural == "2"] <- 26
+nClusters[zz$geo_state == "MMR003" & zz$geo_rural == "0"] <- 27
+nClusters[zz$geo_state == "MMR003" & zz$geo_rural == "1"] <- 17
+nClusters[zz$geo_state == "MMR003" & zz$geo_rural == "2"] <- 27
+
+zz$nClusters <- nClusters
+
+clusterSize <- data.frame(table(z$geo_ward_vt_eho))
+names(clusterSize) <- c("geo_villward", "size")
+
+source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/R/23-calculate_weights.R")
+
+zz <- merge(zz, clusterSize,
+            by.x = "geo_ward_vt_eho", by.y = "geo_villward",
+            all.x = TRUE)
+
+zz$weights <- get_weights(n = zz$population, 
+                          N = zz$totalPop, 
+                          m = zz$nClusters, 
+                          c = zz$size)
+
+zz <- janitor::clean_names(zz)
+
+write_dta(zz, file.path(getwd(), "stata_dta", "svy_weight.dta"))
+
+```
+
+If you want to merge that weight dataset with the hh or anthro dataset, please use `geo_ward_vt_eho` as a merge key variable. Please note that the whole weight calculation that VI did was based on the `component - 1` sample, not including the `component - 2` sample, which was applied for RDD analysis. (you can use the `sample_component` variable to identify the sample component in the dataset) Therefore, before merging, please drop the` component - 2` observation from the dataset. In this case, you might encounter one issue in the anthro dataset because there was no variable to identify which observation baseline to what sample component. In this case, merge the `hh` dataset with the `anthro` dataset first to get the sample component information. However, you will not get to merge all anthro observations with the `hh` dataset. Some observations from the anthro dataset could not match the `hh` observation because the field team failed to record the correct household information in the `anthro survey data`. 
+
+
+The cleaned household dataset was saved in the STATA format using the code below. Before converting into STATA format, drop the very long name variable, which was not accepted in STATA format. 
+
+```{r}
+hh <- dplyr::select(hh, -c("SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_gov_grp.support_gov_rep",
+                             "SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_ngo_grp.support_ngo_rep",
+                             "SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_cso_grp.support_cso_rep",
+                             "SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_ro_grp.support_ro_rep",
+                             "SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_ho_grp.support_ho_rep",
+                             "SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_orgoth_grp.support_orgoth_rep"))
+
+hh <- janitor::clean_names(hh)
+
+write_dta(hh, file.path(getwd(), "stata_dta", "hh.dta"))
 ```
 
 
