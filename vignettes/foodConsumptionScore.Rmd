@@ -1,0 +1,19 @@
+---
+title: "Food consumption score indicators"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  error = FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo = FALSE}
+library(myanmarMCCTdata)
+```
+
+

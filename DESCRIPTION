@@ -1,0 +1,47 @@
+Package: myanmarMCCTdata
+Type: Package
+Title: Myanmar Mother and Child Cash Transfer (MCCT) Programme Evaluation Data
+    Handler
+Version: 0.1.0
+Authors@R: c(
+    person("Ernest", "Guevarra", comment = c(ORCID = "0000-0002-4887-4415"), 
+           email = "ernest@guevarra.io", role = c("aut", "cre")),
+    person("Abdoul-Aziz", "Goza", email = "aziz@validinternational.org", 
+           role = "aut"),
+    person("Nicholus", "Tint Zaw", email = "nicholustintzaw@gmail.com",
+           role = "ctb"))
+Description: In support of the Myanmar Mother and Child Cash Transfer programme 
+    evaluation, this package has been developed to support the handling,
+    processing, analysis of data collected for the study. The package includes 
+    functions to retrieve data from the online server database, to appropriately
+    structure datasets, to check and clean data, to recode data to respective
+    indicator sets, to estimate indicators and to perform appropriate
+    comparative analysis specified by the analysis.
+License: GPL-3
+Depends: R (>= 2.10)
+Imports: 
+    dplyr,
+    tidyr,
+    lubridate,
+    ggplot2,
+    bbw,
+    stringr,
+    zscorer,
+    ppitables,
+    survey,
+    odkr (>= 0.3.2),
+    nipnTK (>= 0.1.0),
+    nutricheckr (>= 0.1.0)
+Suggests: 
+    knitr,
+    rmarkdown
+Remotes: 
+    validmeasures/odkr,
+    nutriverse/nipnTK,
+    nutriverse/nutricheckr
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2
+URL: https://github.com/validmeasures/myanmarMCCTdata
+BugReports: https://github.com/validmeasures/myanmarMCCTdata/issues
+VignetteBuilder: knitr

@@ -1,0 +1,19 @@
+---
+title: "Coping strategy index indicators"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  error = FALSE,
+  message = FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo = FALSE}
+library(myanmarMCCTdata)
+```
+
+

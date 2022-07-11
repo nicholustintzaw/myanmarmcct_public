@@ -1,0 +1,230 @@
+---
+title: "MCCT indicators"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  error = FALSE,
+  message = FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo = FALSE}
+library(myanmarMCCTdata)
+library(magrittr)
+library(ggplot2)
+library(dplyr)
+```
+
+Coverage of the Myanmar MCCT programme in Kayah and Kayin state can be assessed using data from the `hh` and `hhMembers` dataset. The `hh` dataset contains responses by sampled households with regard to whether they were recipients of MCCT benefits along with other MCCT-specific questions. The `hhMembers` dataset contains information from each member of a household that can be used to determine their eligibility to receive MCCT benefits. Specifically, information on a child's date of birth and the pregnancy status of women of reproductive age in the household.
+
+Following the *data manipulation and structuring*, *data recoding* and *data analysis* workflow used in the Myanmar MCCT baseline assessment, the MCCT-related indicators for Kayah and Kayin state were produced using code presented hereafter.
+
+## MCCT indicators for Kayah State
+
+Following is the code used to produce the results for MCCT coverage indicators for Kayah state.
+
+```{r, echo = TRUE, eval = FALSE}
+create_mcct(df = hh, x = hhMembers) %>%
+  recode_mcct() %>%
+  create_weighted_table(vars = c("mcct1", "mcct2",
+                                 paste("mcct3", letters[1:7], sep = ""),
+                                 paste("mcct5", letters[1:4], sep = ""),
+                                 paste("mcct6", letters[1:3], sep = "")),
+                        labs = c("MCCT coverage",
+                                 "Mean number of cash transfers received",
+                                 "Cash transfer received through mobile programme",
+                                 "Cash transfer received through wave money",
+                                 "Cash transfer received through village head/GAD",
+                                 "Cash transfer received through EHO",
+                                 "Cash transfer received through CBO",
+                                 "Cash transfer received through midwife",
+                                 "Cash transfer received through health staff",
+                                 "Cash transfer used for food",
+                                 "Cash transfer used for education",
+                                 "Cash transfer used for housing",
+                                 "Cash transfer used for clothes",
+                                 "Usage of cash transfer decided by mother",
+                                 "Usage of cash transfer decided by husband",
+                                 "Usage of cash transfer decided by other household head/member"),
+                        state = "Kayah")
+```
+
+This results in:
+
+```{r, echo = FALSE, eval = TRUE}
+x <- create_mcct(df = hh, x = hhMembers) %>%
+  recode_mcct() %>%
+  create_weighted_table(vars = c("mcct1", "mcct2",
+                                 paste("mcct3", letters[1:7], sep = ""),
+                                 paste("mcct5", letters[1:4], sep = ""),
+                                 paste("mcct6", letters[1:3], sep = "")),
+                        labs = c("MCCT coverage",
+                                 "Mean number of cash transfers received",
+                                 "Cash transfer received through mobile programme",
+                                 "Cash transfer received through wave money",
+                                 "Cash transfer received through village head/GAD",
+                                 "Cash transfer received through EHO",
+                                 "Cash transfer received through CBO",
+                                 "Cash transfer received through midwife",
+                                 "Cash transfer received through health staff",
+                                 "Cash transfer used for food",
+                                 "Cash transfer used for education",
+                                 "Cash transfer used for housing",
+                                 "Cash transfer used for clothes",
+                                 "Usage of cash transfer decided by mother",
+                                 "Usage of cash transfer decided by husband",
+                                 "Usage of cash transfer decided by other household head/member"),
+                        state = "Kayah")
+
+# Showing first 15 rows of results output
+head(x, 15)
+```
+
+The indicator results produced are in a long table format i.e. each row of data is for every single indicator and for every unit of stratification. This is the preferred format for storing indicator results data as it lends itself to any further analysis and/or plotting later on.
+
+For example, if we wanted to plot the estimates for each strata of the MCCT coverage indicator and show the confidence interval of each estimate akin to a forest plot, we can use the following code using the output data.frame above:
+
+```{r, echo = TRUE, eval = FALSE}
+create_mcct(df = hh, x = hhMembers) %>%
+  recode_mcct() %>%
+  create_weighted_table(vars = c("mcct1", "mcct2",
+                                 paste("mcct3", letters[1:7], sep = ""),
+                                 paste("mcct5", letters[1:4], sep = ""),
+                                 paste("mcct6", letters[1:3], sep = "")),
+                        labs = c("MCCT coverage",
+                                 "Mean number of cash transfers received",
+                                 "Cash transfer received through mobile programme",
+                                 "Cash transfer received through wave money",
+                                 "Cash transfer received through village head/GAD",
+                                 "Cash transfer received through EHO",
+                                 "Cash transfer received through CBO",
+                                 "Cash transfer received through midwife",
+                                 "Cash transfer received through health staff",
+                                 "Cash transfer used for food",
+                                 "Cash transfer used for education",
+                                 "Cash transfer used for housing",
+                                 "Cash transfer used for clothes",
+                                 "Usage of cash transfer decided by mother",
+                                 "Usage of cash transfer decided by husband",
+                                 "Usage of cash transfer decided by other household head/member"),
+                        state = "Kayah") %>%
+  filter(variable == "mcct1") %>%
+  ggplot(mapping = aes(x = estimate * 100, 
+                       y = factor(strata, 
+                                  levels = c("Total", "Poorest", "Poor",
+                                             "Medium", "Wealthy", "Wealthiest",
+                                             "Hard-to-reach", "Rural", 
+                                             "Urban")))) +
+  geom_point() +
+  geom_errorbarh(mapping = aes(xmin = lcl * 100, xmax = ucl * 100),
+                 height = 0.2) +
+  scale_x_continuous(limits = c(0, 100), breaks = seq(from = 0, to = 100, by = 10)) +
+  labs(x = "%", y = "") +
+  theme_bw()
+```
+
+This produces the following plot:
+
+```{r, echo = FALSE, eval = TRUE}
+create_mcct(df = hh, x = hhMembers) %>%
+  recode_mcct() %>%
+  create_weighted_table(vars = c("mcct1", "mcct2",
+                                 paste("mcct3", letters[1:7], sep = ""),
+                                 paste("mcct5", letters[1:4], sep = ""),
+                                 paste("mcct6", letters[1:3], sep = "")),
+                        labs = c("MCCT coverage",
+                                 "Mean number of cash transfers received",
+                                 "Cash transfer received through mobile programme",
+                                 "Cash transfer received through wave money",
+                                 "Cash transfer received through village head/GAD",
+                                 "Cash transfer received through EHO",
+                                 "Cash transfer received through CBO",
+                                 "Cash transfer received through midwife",
+                                 "Cash transfer received through health staff",
+                                 "Cash transfer used for food",
+                                 "Cash transfer used for education",
+                                 "Cash transfer used for housing",
+                                 "Cash transfer used for clothes",
+                                 "Usage of cash transfer decided by mother",
+                                 "Usage of cash transfer decided by husband",
+                                 "Usage of cash transfer decided by other household head/member"),
+                        state = "Kayah") %>%
+  filter(variable == "mcct1") %>%
+  ggplot(mapping = aes(x = estimate * 100, 
+                       y = factor(strata, 
+                                  levels = c("Total", "Poorest", "Poor",
+                                             "Medium", "Wealthy", "Wealthiest",
+                                             "Hard-to-reach", "Rural", 
+                                             "Urban")))) +
+  geom_point() +
+  geom_errorbarh(mapping = aes(xmin = lcl * 100, xmax = ucl * 100),
+                 height = 0.2) +
+  scale_x_continuous(limits = c(0, 100), breaks = seq(from = 0, to = 100, by = 10)) +
+  labs(x = "%", y = "") +
+  theme_bw()
+```
+
+## MCCT indicators for Kayin State
+
+Following is the code used to produce the results for MCCT coverage indicators for Kayin state.
+
+```{r, echo = TRUE, eval = FALSE}
+create_mcct(df = hh, x = hhMembers) %>%
+  recode_mcct() %>%
+  create_weighted_table(vars = c("mcct1", "mcct2",
+                                 paste("mcct3", letters[1:7], sep = ""),
+                                 paste("mcct5", letters[1:4], sep = ""),
+                                 paste("mcct6", letters[1:3], sep = "")),
+                        labs = c("MCCT coverage",
+                                 "Mean number of cash transfers received",
+                                 "Cash transfer received through mobile programme",
+                                 "Cash transfer received through wave money",
+                                 "Cash transfer received through village head/GAD",
+                                 "Cash transfer received through EHO",
+                                 "Cash transfer received through CBO",
+                                 "Cash transfer received through midwife",
+                                 "Cash transfer received through health staff",
+                                 "Cash transfer used for food",
+                                 "Cash transfer used for education",
+                                 "Cash transfer used for housing",
+                                 "Cash transfer used for clothes",
+                                 "Usage of cash transfer decided by mother",
+                                 "Usage of cash transfer decided by husband",
+                                 "Usage of cash transfer decided by other household head/member"),
+                        state = "Kayin")
+```
+
+This results in:
+
+```{r, echo = FALSE, eval = TRUE}
+x <- create_mcct(df = hh, x = hhMembers) %>%
+  recode_mcct() %>%
+  create_weighted_table(vars = c("mcct1", "mcct2",
+                                 paste("mcct3", letters[1:7], sep = ""),
+                                 paste("mcct5", letters[1:4], sep = ""),
+                                 paste("mcct6", letters[1:3], sep = "")),
+                        labs = c("MCCT coverage",
+                                 "Mean number of cash transfers received",
+                                 "Cash transfer received through mobile programme",
+                                 "Cash transfer received through wave money",
+                                 "Cash transfer received through village head/GAD",
+                                 "Cash transfer received through EHO",
+                                 "Cash transfer received through CBO",
+                                 "Cash transfer received through midwife",
+                                 "Cash transfer received through health staff",
+                                 "Cash transfer used for food",
+                                 "Cash transfer used for education",
+                                 "Cash transfer used for housing",
+                                 "Cash transfer used for clothes",
+                                 "Usage of cash transfer decided by mother",
+                                 "Usage of cash transfer decided by husband",
+                                 "Usage of cash transfer decided by other household head/member"),
+                        state = "Kayin")
+
+# Showing first 15 rows of results output
+head(x, 15)
+```

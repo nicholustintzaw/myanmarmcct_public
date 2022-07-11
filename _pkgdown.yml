@@ -1,0 +1,215 @@
+title: myanmarMCCTdata
+
+url: https://validmeasures.org/myanmarMCCTdata
+
+template:
+  params:
+    bootswatch: sandstone
+
+reference:
+- title: Description
+  contents:
+  - myanmarMCCTdata
+
+- title: Data retrieval and handling
+  contents:
+  - get_mcct_data
+  - merge_repeats
+
+- title: Data manipulation, structuring and cleaning
+  contents:
+  - clean_anthro
+  - clean_hh
+  - get_n
+  - get_n_area
+  - get_n_wealth
+  - split_to_quintiles
+
+- title: MCCT programme coverage indicators
+  contents:
+  - create_mcct
+  - create_mcct_household
+  - recode_mcct
+
+- title: Anthropometric indicators
+  contents:
+  - create_canthro
+  - create_manthro
+  - recode_age
+  - recode_sex
+  - recode_weight
+  - recode_height
+  - recode_muac
+  - recode_oedema
+  - recode_position
+  - recode_anthro
+  - recode_maternal_anthro
+
+- title: Infant and young child feeding indicators
+  contents:
+  - create_iycf
+  - recode_eibf
+  - recode_ebf
+  - recode_mmf
+  - recode_mdd
+  - recode_mad
+  - recode_iycf
+
+- title: Antenatal care indicators
+  contents:
+  - create_anc
+  - recode_provider_specialist
+  - recode_provider_doctor
+  - recode_provider_nurse
+  - recode_provider_ha
+  - recode_provider_pdoc
+  - recode_provider_lhv
+  - recode_provider_midwife
+  - recode_provider_amw
+  - recode_provider_tba
+  - recode_provider_chw
+  - recode_provider_ehw
+  - recode_anc_provider
+  - recode_anc_counselling
+  - recode_anc_supplementation
+  - recode_anc_testing
+  - recode_anc
+
+- title: Birth/delivery indicators
+  contents:
+  - recode_birth
+
+- title: Postnatal care indicators
+  contents:
+  - recode_pnc
+
+- title: Newborn care indicators
+  contents:
+  - recode_nbc
+
+- title: Family planning indicators
+  contents:
+  - recode_fplan
+
+- title: Child health indicators
+  contents:
+  - create_chealth
+  - recode_epi
+  - recode_age_epi
+  - recode_birthweight
+  - recode_diarrhoea
+  - recode_ari
+  - recode_fever
+  - recode_chealth
+
+- title: Water, sanitation and hygiene indicators
+  contents:
+  - recode_water
+  - recode_sanitation
+  - recode_handwashing
+  - recode_wash
+
+- title: Food consumption score indicators
+  contents:
+  - recode_fcs
+  - recode_fcs_nutrition
+
+- title: Coping strategies index
+  contents:
+  - recode_csi_consumption
+  - recode_csi_livelihoods
+
+- title: Minimum dietary diversity for women indicators
+  contents:
+  - recode_mddw
+
+- title: Household food expenditure share indicators
+  contents:
+  - recode_hfes
+
+- title: Poverty probability index
+  contents:
+  - create_ppi
+  - recode_ppi
+
+- title: Calculating survey weights
+  contents:
+  - get_cluster_weights
+  - get_individual_weights
+  - get_weights
+
+- title: Tabular analysis
+  contents:
+  - create_table
+  - create_unweighted_table
+  - create_weighted_table
+  - create_anthro_table
+  - create_weighted_anthro
+
+- title: Datasets
+  contents:
+  - hh
+  - hhMembers
+  - childHealth
+  - iycf
+  - anc1
+  - anc2
+  - motherAnthro
+  - childAnthro
+  - townshipData
+  - villageData
+
+- title: Supporting datasets
+  contents:
+  - anthroChecks
+  - anthroDF
+  - checks
+
+- title: Results
+  contents:
+  - ancResults
+  - birthResults
+  - ccsiResults
+  - cnutResults
+  - coughResults
+  - diarrhoeaResults
+  - fcsResults
+  - fcsnResults
+  - feverResults
+  - fpResults
+  - hfesResults
+  - illResults
+  - immunisationResults
+  - iycfResults
+  - lbwResults
+  - lcsiResults
+  - mcctResults
+  - mddwResults
+  - mnutResults
+  - nbcResults
+  - pncResults
+  - washResults
+
+- title: Codebooks
+  contents:
+  - codebook
+  - codebookAnthro
+  - codebookTownship
+  - codebookVillage
+
+toc:
+  depth: 2
+
+navbar:
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: "The Myanmar MCCT dataset"
+        href: articles/myanmarMCCTdataset.html
+      - text: "MCCT indicators"
+        href: articles/mcctCoverage.html
+      - text: "Food consumption score indicators"
+        href: articles/foodConsumptionScore.html
+      - text: "Coping strategies index indicators"
+        href: articles/copingStrategiesIndex.html

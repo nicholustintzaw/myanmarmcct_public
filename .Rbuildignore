@@ -1,0 +1,14 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^data-raw$
+^README\.Rmd$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^briefcase\.log$
+^\.travis\.yml$
+^appveyor\.yml$
+^vignettes/mcctCoverage\.Rmd$
+^vignettes/foodConsumptionScore\.Rmd$
+^vignettes/copingStrategiesIndex\.Rmd$

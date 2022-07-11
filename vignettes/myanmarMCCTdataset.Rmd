@@ -1,0 +1,52 @@
+---
+title: "The Myanmar MCCT dataset"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The Myanmar MCCT dataset}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,
+  error = FALSE,
+  message = FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, echo = FALSE}
+library(myanmarMCCTdata)
+```
+
+The `myanmarMCCTdata` package is meant to facilitate the reproducibility of analysis and production of results of the Myanmar MCCT baseline assessment in Kayin and Kayah state. The package includes the following families of functions: 1) *data retrieval and handling* functions; 2) *data cleaning* functions; 3) *data manipulation and structuring* functions; 4) *data recoding* functions; and, 5) *data analysis* functions.
+
+The `myanmarMCCTdata` package also provides datasets produced from applying the first two families of functions mentioned above. These two families of functions produce the following datasets that are already included in the `myanmarMCCTdata` package:
+
+* **Raw household dataset** - can be accessed by making a call for the `hh` object
+
+* **Raw household members dataset** - can be accessed by making a call for the `hhMembers` object
+
+* **Raw child health dataset** - can be accessed by making a call for the `childHealth` object
+
+* **Raw IYCF dataset** - can be accessed by making a call for the `iycf` object
+
+* **Raw ANC dataset** - can be accessed by making a call for the `anc1` object to get the ANC dataset for currently pregnant women and `anc2` object to get the ANC dataset for mothers who have children less than 5 years old.
+
+* **Raw mother anthropometric dataset** - can be accessed by making a call for the `motherAnthro` object
+
+* **Raw child anthropometric dataset** - can be accesssed by making a call for the `childAnthro` object
+
+## Data workflow
+
+The Myanmar MCCT baseline assessment data workflow starts with the raw datasets mentioned above. Then, depending on the indicators being assessed, the raw dataset is then further processed and structured using the data manipulation and structuring family of functions. This is necessary for some indicators that require information from multiple raw datasets to be able to calculate indicators based on specified indicator definitions. The data manipulation and structuring family of functions starts with the prefix `create_` followed by the name of the indicator set it is creating.
+
+Once data has been structured (for indicators that need it), the next step is the recoding of variables to match indicator definitions. This is faciliated by the family of data recoding functions which starts with the prefix `recode_` followed by the name of the indicator set being recoded.
+
+Finally, once indicator datasets have been recoded, weighted data analysis can be performed and result tables produced. This is done using the `create_weighted_table()` function. For anthropometric data, a specialised function called `create_weighted_anthro()` is used instead.
+
+The functions used for data manipulation and structuring to data recoding and then data analysis all take on a dataset or data.frame as its first argument. Hence, these three steps can be performed using the pipe operator (`%>%`) provided by the R package `magrittr` and can all be performed with three lines of code to output a table of indicator results.
+
+For indicator specific application of these three steps for producing indicator estimates, see the indicator specific vignettes/articles.
