@@ -56,9 +56,9 @@ create_chealth <- function(df, x, y) {
   z <- z[z$age < (5 * 365.25) & !is.na(z$age), ]
 
   ## remove unnecessary variables
-  z <- z[ , names(z)[!names(z) %in% c("KEY.y",
-                                      "PARENT_KEY.x",
-                                      "SET.OF.child_vc_rep")]]
+  # z <- z[ , names(z)[!names(z) %in% c("KEY.y",
+  #                                     "PARENT_KEY.x",
+  #                                     "SET.OF.child_vc_rep")]]
 
   ## return data.frame
   return(z)
@@ -1132,6 +1132,7 @@ recode_fever <- function(df) {
 
 recode_chealth <- function(df,
                            core.columns = c("KEY",
+                                            "KEY.y",
                                             "geo_state",
                                             "geo_rural",
                                             "geo_villward",

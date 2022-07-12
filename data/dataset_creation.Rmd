@@ -28,7 +28,7 @@ load('hh.rda')
 load('checks.rda')
 
 # load function
-source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/R/30-clean_hh.R")
+source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarmcct_public/R/30-clean_hh.R")
 
 # data cleaning 
 # hh <- clean_hh(df = hh, checks = checks)
@@ -86,7 +86,7 @@ load('hhMembers.rda')
 
 ```{r}
 # run the 06 r script file
-source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/R/06-recode_chealth.R")
+source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarmcct_public/R/06-recode_chealth.R")
 
 ```
 
@@ -125,7 +125,7 @@ load('childAnthro.rda')
 
 ```{r}
 # run the 06 r script file
-source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/R/03-recode_anthro.R")
+source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarmcct_public/R/03-recode_anthro.R")
 
 ```
 
@@ -158,9 +158,9 @@ load('hhMembers.rda')
 
 ```{r}
 # run the 06 r script file
-source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/R/05-recode_anc.R")
-source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/R/14-recode_delivery.R")
-source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/R/17-recode_pnc.R")
+source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarmcct_public/R/05-recode_anc.R")
+source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarmcct_public/R/14-recode_delivery.R")
+source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarmcct_public/R/17-recode_pnc.R")
 
 ```
 
@@ -211,7 +211,7 @@ This module will use the existing loaded `hh` module and not be required to load
 
 ```{r}
 # run the 06 r script file
-source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/R/10-recode_csi.R")
+source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarmcct_public/R/10-recode_csi.R")
 
 ```
 
@@ -245,8 +245,8 @@ This module will use the existing loaded `hh` module and not be required to load
 
 ```{r}
 # run the 06 r script file
-source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/R/13-recode_ppi.R")
-source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/R/25-split_to_quintiles.R")
+source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarmcct_public/R/13-recode_ppi.R")
+source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarmcct_public/R/25-split_to_quintiles.R")
 
 ```
 
@@ -274,7 +274,7 @@ The `r` file called `23-calculate_weight.R` did not include the calculation of w
 ```{r}
 options(stringsAsFactors = FALSE)
 
-pop <- read.csv("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/data-raw/pop/popMyanmar.csv")
+pop <- read.csv("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarmcct_public/data-raw/pop/popMyanmar.csv")
 
 x <- pop[ , c("geo_ward_vt_eho", "population")]
 y <- hh[hh$sample_component == 1, c("geo_state", "geo_rural", "geo_villward")]
@@ -364,7 +364,7 @@ zz$nClusters <- nClusters
 clusterSize <- data.frame(table(z$geo_ward_vt_eho))
 names(clusterSize) <- c("geo_villward", "size")
 
-source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarMCCTdata/R/23-calculate_weights.R")
+source("C:/Users/Nicholus Tint Zaw/Documents/GitHub/myanmarmcct_public/R/23-calculate_weights.R")
 
 zz <- merge(zz, clusterSize,
             by.x = "geo_ward_vt_eho", by.y = "geo_villward",
@@ -375,13 +375,25 @@ zz$weights <- get_weights(n = zz$population,
                           m = zz$nClusters, 
                           c = zz$size)
 
+# hhWeight <- merge(zz[ c("geo_ward_vt_eho", "weights")], hhWeight, by.x = "geo_ward_vt_eho", by.y = "geo_ward_vt_eho", all.y = TRUE)
+# 
+# 
+# hhWeight <- dplyr::select(hhWeight, -c("SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_gov_grp.support_gov_rep",
+#                              "SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_ngo_grp.support_ngo_rep",
+#                              "SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_cso_grp.support_cso_rep",
+#                              "SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_ro_grp.support_ro_rep",
+#                              "SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_ho_grp.support_ho_rep",
+#                              "SET.OF.consent.hh_grp.hh_income_grp.hh_reg_income_grp.reg_income_grp.support_orgoth_grp.support_orgoth_rep"))
+
 zz <- janitor::clean_names(zz)
 
 write_dta(zz, file.path(getwd(), "stata_dta", "svy_weight.dta"))
 
 ```
 
-If you want to merge that weight dataset with the hh or anthro dataset, please use `geo_ward_vt_eho` as a merge key variable. Please note that the whole weight calculation that VI did was based on the `component - 1` sample, not including the `component - 2` sample, which was applied for RDD analysis. (you can use the `sample_component` variable to identify the sample component in the dataset) Therefore, before merging, please drop the` component - 2` observation from the dataset. In this case, you might encounter one issue in the anthro dataset because there was no variable to identify which observation baseline to what sample component. In this case, merge the `hh` dataset with the `anthro` dataset first to get the sample component information. However, you will not get to merge all anthro observations with the `hh` dataset. Some observations from the anthro dataset could not match the `hh` observation because the field team failed to record the correct household information in the `anthro survey data`. 
+If you want to merge that weight dataset with the hh or anthro dataset, please use `geo_ward_vt_eho` as a merge key variable. But that variable itself was not unique in VI calculation result. Therefore, one-to-one merging was not possible, and there were some duplicated geographical village tracts or wards. I tried to solve this issue using all the resources that this VI r-package has, but I did not. Therefore, re-calculation on weight was suggested. 
+
+Please note that the whole weight calculation that VI did was based on the `component - 1` sample, not including the `component - 2` sample, which was applied for RDD analysis. (you can use the `sample_component` variable to identify the sample component in the dataset) Therefore, before merging, please drop the` component - 2` observation from the dataset. In this case, you might encounter one issue in the anthro dataset because there was no variable to identify which observation baseline to what sample component. In this case, merge the `hh` dataset with the `anthro` dataset first to get the sample component information. However, you will not get to merge all anthro observations with the `hh` dataset. Some observations from the anthro dataset could not match the `hh` observation because the field team failed to record the correct household information in the `anthro survey data`. 
 
 
 The cleaned household dataset was saved in the STATA format using the code below. Before converting into STATA format, drop the very long name variable, which was not accepted in STATA format. 

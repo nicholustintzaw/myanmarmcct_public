@@ -78,10 +78,10 @@ create_anc <- function(df, x, y, status) {
   }
 
   ## remove unnecessary variables
-  z <- z[ , names(z)[!names(z) %in% c("KEY.y",
-                                      "PARENT_KEY.x",
-                                      "SET.OF.ancnow_rep",
-                                      "SET.OF.ancpast_rep")]]
+  # z <- z[ , names(z)[!names(z) %in% c("KEY.y",
+  #                                     "PARENT_KEY.x",
+  #                                     "SET.OF.ancnow_rep",
+  #                                     "SET.OF.ancpast_rep")]]
 
   ## return data.frame
   return(z)
@@ -2489,6 +2489,7 @@ recode_anc_testing <- function(df, status = NULL) {
 recode_anc <- function(df,
                        status = NULL,
                        core.columns = c("KEY",
+                                        "KEY.y",
                                         "geo_rural",
                                         "geo_state",
                                         "geo_villward",

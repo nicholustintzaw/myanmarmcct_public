@@ -23,6 +23,7 @@
 
 recode_pnc <- function(df,
                        core.columns = c("KEY",
+                                        "KEY.y",
                                         "geo_rural",
                                         "geo_state",
                                         "geo_villward",
