@@ -348,6 +348,8 @@ recode_position <- function(df) {
 
 recode_anthro <- function(df,
                           core.columns = c("enumDate",
+                                           "instanceID",
+                                           "KEY",
                                            "geo_rural",
                                            "geo_state",
                                            "geo_villward"),
