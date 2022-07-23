@@ -111,14 +111,37 @@ merge 1:1 key 	using "$raw/ppiDf.dta", ///
 keep if _merge == 3
 drop _merge
 
-// Survey weight // 
-preserve 
-use  "$raw/svy_weight.dta", clear
+// ADD Survey weight - using weight data calculated by STATA not from r-package // 
+gen geo_ward_vt_eho = geo_villward
 
-distinct geo_ward_vt_eho // duplicate cases detected
+distinct geo_state geo_ward_vt_eho geo_rural, joint
 
-// geo_ward_vt_eho is same as geo_villward from hh.dta
-restore
+merge m:1 geo_state geo_ward_vt_eho geo_rural using "$raw/svy_weight_STATA.dta"
+
+tab _merge sample_component 
+
+/*
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                           241
+        from master                       241  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                             2,423  (_merge==3)
+    -----------------------------------------
+
+	
+Nicholus: 
+Those unmatched observations have come from survey component 2. Survey component 1 
+is for cross-sectional design and 2 for RDD design; both have different sampling 
+procedures. But VI did not calculate the weight for component 2 (check in the 
+"weights.R" file and my note in the STATA weight calculation file). But, not all 
+component 2 observations were unmatched in this merging (HH vs. weight dataset). 
+And I am not sure why. We need to use only component 1 or both in this secondary analysis. 
+*/
+
+drop _merge 
 
 rename key 		parent_key 
 
@@ -148,6 +171,7 @@ save `anc_past', replace
 restore
 
 merge 1:m key using `anc_past'
+
 keep if _merge == 3
 drop _merge
 
@@ -181,6 +205,10 @@ merge 1:m key using `pnc'
 keep if _merge == 3
 drop _merge
 
+gen hhroster_id = women_id_pregpast
+
+tempfile mother_module
+save `mother_module', replace 
 
 merge m:1 parent_key using `hhupdated'
 
@@ -217,6 +245,11 @@ merge 1:1 key using `chealth_all'
 
 keep if _merge == 3
 drop _merge
+
+gen hhroster_id = child_id_health
+
+tempfile child_non_anthro
+save `child_non_anthro', replace 
 
 merge m:1 parent_key using `hhupdated'
 
@@ -269,7 +302,7 @@ merge 1:m cal_respid	using `anthro_update', keepusing(dob age sex muac ///
 						severe_waz gam_whz mam_whz sam_whz gam_muac mam_muac sam_muac)
 
 
-					
+		
 /*
 
     Result                           # of obs.
@@ -287,3 +320,41 @@ keep if _merge == 3
 drop _merge 
 
 save "$dta/hh_child_anthro.dta", replace 
+
+/*
+********************************************************************************
+* Combined HH + Mom + Child (non-anthro data) *
+********************************************************************************
+
+use `mother_module', clear
+
+distinct key 
+count if mi(key)
+
+
+merge m:m parent_key using `child_non_anthro'
+
+&&&
+
+parent_key hhroster_id
+use `child_non_anthro', clear
+
+distinct key 
+count if mi(key)
+&&
+
+
+// use hh dataset with ppi, csi and weight 
+use  "$dta/hh_ppi_csi.dta", clear 
+
+// merge with mom module dataset  
+merge 1:m parent_key using `mother_module'
+
+drop if _merge == 2 
+drop _merge 
+
+// merge with mom dataset 
+merge 1:1 key using `child_non_anthro'
+&&&
+
+*/
